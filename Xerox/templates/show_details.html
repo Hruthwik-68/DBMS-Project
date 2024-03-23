@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADMIN PANEL</title>
+    <style>
+        /* Reset default margin and padding */
+        body, h1, h2, h3, p, ul, ol {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "DM Sans", sans-serif;
+            background-color: rgb(98, 95, 95);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            perspective: 1000px; /* Adding perspective for 3D effect */
+            margin-left: 10px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color: #333;
+        }
+
+        td {
+            background-color: #fff;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        button {
+            padding: 8px 12px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        input[type="checkbox"] {
+            cursor: pointer;
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>ADMIN PANEL</h1>
+        <table>
+            <thead>
+                <tr>
+                   
+                    <th>USN</th>
+                    <th>PDF File</th>
+                    <th>Number of Pages</th>
+                    <th>Number of Copies</th>
+                    <th>Page Numbers to Print</th>
+                    <th>Color Page Numbers</th>
+                    <th>Soft Bind</th>
+                    <th>Back to Back</th>
+                    <th>Description</th>
+                    <th>Total Cost</th>
+                    <th>Done</th> <!-- New column for checkbox -->
+                    
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                   
+                    <td>{{ order.usn }}</td>
+                    <td><a href="{{ url_for('download_pdf', filename=order.pdf_file) }}" target="_blank">{{ order.pdf_file }}</a></td>
+                    <td>{{ order.num_pages }}</td>
+                    <td>{{ order.num_copies }}</td>
+                    <td>{{ order.page_numbers_to_print }}</td>
+                    <td>{{ order.color_page_numbers }}</td>
+                    <td>{{ order.soft_bind }}</td>
+                    <td>{{ order.back_to_back }}</td>
+                    <td>{{ order.description }}</td>
+                    <td>{{ order.total_cost }}</td>
+                    <td>  {% if order.status == 'Pending' %}
+                        <form action="/update_status" method="post">
+                            <input type="hidden" name="order_id" value="{{ order.id }}">
+                            <input type="hidden" name="status" value="Done">
+                            <button type="submit">Mark Done</button>
+                        </form>
+                        
+                    {% else %}
+                        Done
+                    {% endif %}</td> <!-- Checkbox for marking as done -->
+                    <td><button onclick="deleteOrder('{{ order.id }}')">Delete</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function deleteOrder(orderId) {
+            if (confirm("Are you sure you want to delete this order?")) {
+                // Redirect to delete endpoint passing order ID
+                window.location.href = "/delete/" + orderId;
+            }
+        }
+    </script>
+</body>
+</html>

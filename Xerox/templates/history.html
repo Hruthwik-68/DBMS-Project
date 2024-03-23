@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+            margin-right: 10px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        input[type="text"] {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+        }
+
+        button {
+            padding: 8px 12px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color: #333;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tbody tr:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Order History</h1>
+
+    <div class="container">
+        <!-- {% if current_user %}
+            <p>Welcome, {{ current_user }}</p>
+            <form action="{{ url_for('logout') }}" method="post">
+                <button type="submit">Logout</button>
+            </form>
+        {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('signup') }}">Signup</a>
+        {% endif %} -->
+
+        <form action="/get_orders" method="post">
+            <label for="usn">Enter USN:</label>
+            <input type="text" id="usn" name="usn">
+            <button type="submit">Retrieve Orders</button>
+        </form>
+
+        {% if orders %}
+        <table>
+            
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>USN</th>
+                    <th>PDF File</th>
+                    <th>Number of Pages</th>
+                    <th>Number of Copies</th>
+                    <th>Page Numbers to Print</th>
+                    <th>Color Page Numbers</th>
+                    <th>Soft Bind</th>
+                    <th>Back to Back</th>
+                    <th>Description</th>
+                    <th>Total Cost</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.usn }}</td>
+                    <td>{{ order.pdf_file }}</td>
+                    <td>{{ order.num_pages }}</td>
+                    <td>{{ order.num_copies }}</td>
+                    <td>{{ order.page_numbers_to_print }}</td>
+                    <td>{{ order.color_page_numbers }}</td>
+                    <td>{{ order.soft_bind }}</td>
+                    <td>{{ order.back_to_back }}</td>
+                    <td>{{ order.description }}</td>
+                    <td>{{ order.total_cost }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</body>
+</html>

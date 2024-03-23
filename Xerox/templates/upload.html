@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Form</title>
+    <style>
+        /* Add your CSS styles here */
+        .option-group {
+            margin-bottom: 20px;
+        }
+        /* General styling */
+        body {
+    font-family: Arial, sans-serif;
+    font-family: "DM Sans", sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: rgb(98, 95, 95);
+    background-image: url(college-bg-img.png);
+   
+}
+
+
+
+h1 {
+    text-align: center;
+    color: #ffff;
+}
+
+form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    box-shadow: 0 0 2000px rgba(0, 0, 0, 0.5); /* Adding a subtle shadow to create depth */
+    perspective: 1000px; /* Adding perspective for 3D effect */
+}
+
+.option-group {
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="file"],
+textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+input[type="submit"] {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #218838;
+}
+
+/* Responsive styling */
+@media screen and (max-width: 600px) {
+    form {
+        padding: 10px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="file"],
+    textarea {
+        margin-bottom: 10px;
+    }
+}
+
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.8.335/pdf.min.js"></script>
+    <script>
+
+
+
+
+        function countPages() {
+            var fileInput = document.getElementById('file');
+            var file = fileInput.files[0];
+
+            var fileReader = new FileReader();
+            fileReader.onload = function () {
+                var typedarray = new Uint8Array(this.result);
+                var loadingTask = window['pdfjs-dist/build/pdf'].getDocument({ data: typedarray });
+                loadingTask.promise.then(function (pdf) {
+                    var pageCount = pdf.numPages;
+                    document.getElementById('num_pages').textContent = pageCount;
+                    // Update hidden input with num_pages value
+                    document.getElementById('hidden_num_pages').value = pageCount;
+                    // Call calculateCost() to update total cost
+                    calculateCost();
+                });
+            };
+            fileReader.readAsArrayBuffer(file);
+        }
+
+        function calculateCost() {
+            // Get form inputs
+            const numPagesInput = document.getElementById('hidden_num_pages').value; // Get num_pages from hidden input
+            let startPage, endPage;
+            if (document.getElementById('all_pages').checked) {
+                startPage = 1;
+                endPage = parseInt(numPagesInput); // Convert total pages to integer
+            } else {
+                startPage = parseInt(document.getElementById('start_page').value);
+                endPage = parseInt(document.getElementById('end_page').value);
+            }
+            const numCopies = parseInt(document.getElementById('num_copies').value); // Convert to integer
+            const isSoftBind = document.getElementById('soft_bind').checked;
+            const isBackToBack = document.getElementById('back_to_back').checked;
+            const description = document.getElementById('description').value;
+
+            // Calculate total cost
+            let totalCost = 0;
+
+            // Calculate normal print cost
+            if (document.getElementById('all_pages').checked) {
+                // If all pages are to be printed
+                totalCost += 1 * parseInt(numPagesInput); // Convert total pages to integer
+            } else {
+                // If range of pages is provided
+                totalCost += (1 * (endPage - startPage + 1)); // Adjust for inclusive range
+            }
+
+            // Calculate color print cost
+            if (document.getElementById('all_pages_color').checked) {
+                // If all color pages are to be printed
+                totalCost += 5 * parseInt(numPagesInput); // Convert total pages to integer
+                totalCost = totalCost - numPagesInput;
+            } else if (document.getElementById('zero_pages_color').checked) {
+                totalCost = totalCost;
+            } else {
+                // If specific color pages are provided
+                const startColorPage = parseInt(document.getElementById('start_pages').value);
+                const endColorPage = parseInt(document.getElementById('end_pages').value);
+                totalCost += (5 * (endColorPage - startColorPage + 1)); // Adjust for inclusive range
+            }
+
+            // Multiply by number of copies
+            totalCost *= numCopies;
+
+            // Add soft bind cost if selected
+            if (isBackToBack) {
+                totalCost /= 2; // Back to back discount
+            }
+            if (isSoftBind) {
+                totalCost += 30; // Soft bind cost
+            }
+
+            // Display total cost
+            document.getElementById('total_cost').textContent = totalCost.toFixed(2);
+            document.getElementById('hidden_total_cost').value = totalCost.toFixed(2); // Update hidden input with total_cost value
+        }
+
+        function togglePageInputs() {
+            const allPagesCheckbox = document.getElementById('all_pages');
+            const startPageInput = document.getElementById('start_page');
+            const endPageInput = document.getElementById('end_page');
+            startPageInput.disabled = allPagesCheckbox.checked;
+            endPageInput.disabled = allPagesCheckbox.checked;
+        }
+
+        function toggleColorPageInputs() {
+            const allPagesColorCheckbox = document.getElementById('all_pages_color');
+            const zeroPagesColorCheckbox = document.getElementById('zero_pages_color');
+            const startColorPageInput = document.getElementById('start_pages');
+            const endColorPageInput = document.getElementById('end_pages');
+
+            if (allPagesColorCheckbox.checked) {
+                zeroPagesColorCheckbox.checked = false;
+                startColorPageInput.disabled = true;
+                endColorPageInput.disabled = true;
+            } else if (zeroPagesColorCheckbox.checked) {
+                allPagesColorCheckbox.checked = false;
+                startColorPageInput.disabled = true;
+                endColorPageInput.disabled = true;
+            } else {
+                allPagesColorCheckbox.checked = false;
+                zeroPagesColorCheckbox.checked = false;
+                startColorPageInput.disabled = false;
+                endColorPageInput.disabled = false;
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Madimi+One&family=Open+Sans:ital,wght@1,800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    </head>
+<body>
+
+<img src="college-bg-img.png" alt="">
+    <h1>UPLOAD YOUR FILE</h1>
+
+
+
+
+
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <div class="option-group">
+            <label for="usn">Enter Your USN:</label><br>
+            <input type="text" id="usn" name="usn" required><br><br>
+        </div>
+
+        <div class="option-group">
+            <label for="file">Choose Your File:</label><br>
+            <input type="file" id="file" name="file" accept=".pdf" required onchange="countPages()"><br><br>
+        </div>
+
+        <div class="option-group">
+            <label for="num_pages">Number of Pages:</label><br>
+            <span id="num_pages">0</span><br><br>
+            <!-- Add a hidden input to store num_pages value -->
+            <input type="hidden" id="hidden_num_pages" name="hidden_num_pages" value="0">
+        </div>
+
+        <div class="option-group">
+            <label for="num_copies">Number of Copies:</label><br>
+            <input type="number" id="num_copies" name="num_copies" required><br><br>
+        </div>
+
+        <div class="option-group">
+            <label>Enter Page Numbers to Print:</label><br>
+            <input type="checkbox" id="all_pages" name="all_pages" onchange="togglePageInputs()">
+            <label for="all_pages">Select All</label><br>
+            <input type="number" id="start_page" name="start_page" placeholder="Start Page Number" min="1" max="num_pages" disabled> -
+            <input type="number" id="end_page" name="end_page"  placeholder="End Page Number" min="1" max="num_pages" disabled><br><br>
+        </div>
+
+        <div class="option-group">
+            <label>Enter Color Page Numbers:</label><br>
+            <input type="checkbox" id="all_pages_color" name="all_pages_color" onchange="toggleColorPageInputs()">
+            <label for="all_pages_color">Select All</label><br>
+            <input type="checkbox" id="zero_pages_color" name="zero_pages_color" onchange="toggleColorPageInputs()">
+            <label for="zero_pages_color">No Pages</label><br>
+            <input type="number" id="start_pages" name="start_pages"  placeholder="Start Page Number" min="1" max="num_pages" disabled> -
+            <input type="number" id="end_pages" name="end_pages"  placeholder="End Page Number" min="1" max="num_pages" disabled><br><br>
+        </div>
+
+        <div class="option-group">
+            <label for="back_to_back">Back to Back?</label>
+            <input type="checkbox" id="back_to_back" name="back_to_back"><br><br>
+
+            <label for="soft_bind">Soft Bind?</label>
+            <input type="checkbox" id="soft_bind" name="soft_bind"><br><br>
+        </div>
+
+        <div class="option-group">
+            <label for="description">Description (Max 500 Words):</label><br>
+            <textarea id="description" name="description" maxlength="500"></textarea><br><br>
+        </div>
+
+        <div class="option-group">
+            <span>Total Cost: Rs <span id="total_cost">0.00</span></span><br><br>
+            <!-- Add a hidden input to store total_cost value -->
+            <input type="hidden" id="hidden_total_cost" name="total_cost" value="0.00">
+        </div>
+
+        <!-- Button to calculate cost -->
+        <button type="button" onclick="calculateCost()">Calculate Cost</button>
+
+        <!-- Original submit button -->
+        <input type="submit" value="Submit">
+
+      
+    </form>
+</body>
+</html>
