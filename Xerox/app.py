@@ -37,7 +37,7 @@ def connect_to_database():
         connection = mysql.connector.connect(
             host='localhost',
             user='root',
-            password='dbms',  # Change this to your MySQL password
+            password='dbms',  
             database='hi'
         )
         if connection.is_connected():
