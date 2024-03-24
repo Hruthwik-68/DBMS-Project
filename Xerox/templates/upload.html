@@ -217,6 +217,16 @@ input[type="submit"]:hover {
             }
         }
     </script>
+    <script>
+        // Check if the order number is present in the URL query parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderNumber = urlParams.get('order_number');
+
+        // If order number is present, show an alert with the order number
+        if (orderNumber) {
+            alert("Your order number is: " + orderNumber);
+        }
+    </script>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Madimi+One&family=Open+Sans:ital,wght@1,800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     </head>
@@ -231,8 +241,8 @@ input[type="submit"]:hover {
 
     <form action="/upload" method="post" enctype="multipart/form-data">
         <div class="option-group">
-            <label for="usn">Enter Your USN:</label><br>
-            <input type="text" id="usn" name="usn" required><br><br>
+            <label for="usn">Your USN: {{ session['username'] }}</label><br>
+            
         </div>
 
         <div class="option-group">

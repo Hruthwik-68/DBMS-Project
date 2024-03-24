@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Success</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        h1 {
+            color: #007bff;
+        }
+        p {
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+        .button-container {
+            margin-top: 30px;
+        }
+        .button-container button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .button-container button:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Payment Successful!</h1>
+    <p>Your payment was processed successfully.</p>
+    <div class="button-container">
+        <button onclick="window.location.href='/upload'">Upload More Files</button>
+        <button onclick="window.location.href='/'">Back to Main Page</button>
+    </div>
+</body>
+</html>

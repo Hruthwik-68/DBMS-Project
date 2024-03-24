@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+</head>
+<body>
+    <h2>Signup</h2>
+    <form action="{{ url_for('signup') }}" method="POST">
+        <label for="usn">USN:</label><br>
+        <input type="text" id="usn" name="usn" required><br><br>
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><br><br>
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password" required><br><br>
+        <label for="security_question">Security Question:</label><br>
+        <select id="security_question" name="security_question" required>
+            <option value="What is your mother's maiden name?">What is your mother's maiden name?</option>
+            <option value="What city were you born in?">What city were you born in?</option>
+            <option value="What is your favorite book?">What is your favorite book?</option>
+            <option value="What is the name of your first pet?">What is the name of your first pet?</option>
+        </select><br><br>
+        <label for="security_answer">Security Answer:</label><br>
+        <input type="text" id="security_answer" name="security_answer" required><br><br>
+        <input type="submit" value="Signup">
+    </form>
+    <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+</body>
+</html>
