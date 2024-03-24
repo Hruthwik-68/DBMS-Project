@@ -334,6 +334,32 @@ def payment_success():
     return render_template('payment_success.html')
 
 
+@app.route('/payment_details')
+def payment_details():
+    ord_no = request.args.get('ord_no')
+    connection = connect_to_database()
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            cursor.execute("SELECT * FROM payments WHERE order_number = %s", (ord_no,))
+            payment = cursor.fetchone()
+            cursor.fetchall()  # Fetch all remaining results (if any)
+            cursor.close()  # Close the cursor after fetching payment details
+            connection.close()  # Close the connection after fetching payment details
+            if payment:
+                return render_template('payment_details.html', payment=payment)
+            else:
+                return "Payment details not found for the given order number."
+        except mysql.connector.Error as e:
+            print(f"Error retrieving payment details from database: {e}")
+            return f"Error retrieving payment details from database: {e}"
+    else:
+        return "Failed to connect to the database."
+
+
+
+
+
 @app.route('/order_history/<usn>')
 def order_history(usn):
     # Connect to the database

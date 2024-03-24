@@ -27,7 +27,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
             background-color: #fff;
@@ -80,12 +80,13 @@
                     <th>Back to Back</th>
                     <th>Description</th>
                     <th>Total Cost</th>
+                    <th>Payment Details</th>
                 </tr>
             </thead>
             <tbody>
                 {% for order in orders %}
                 <tr>
-                    <td>{{ order.id }}</td>
+                    <td>{{ order.order_number }}</td>
                     <td>{{ order.usn }}</td>
                     <td>{{ order.pdf_file }}</td>
                     <td>{{ order.num_pages }}</td>
@@ -96,6 +97,12 @@
                     <td>{{ order.back_to_back }}</td>
                     <td>{{ order.description }}</td>
                     <td>{{ order.total_cost }}</td>
+                    <td>
+                        <a href="/payment_details?ord_no={{order.order_number}}">
+                            <button>View</button>
+                        </a>
+                    </td>
+
                 </tr>
                 {% endfor %}
             </tbody>
