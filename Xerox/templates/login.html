@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <h2>Login</h2>
+    {% if message %}
+        <p>{{ message }}</p>
+    {% endif %}
+    <form action="{{ url_for('login') }}" method="POST">
+        <label for="usn">USN:</label><br>
+        <input type="text" id="usn" name="usn" required><br><br>
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password" required><br><br>
+        <input type="submit" value="Login">
+    </form>
+    <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign up</a></p>
+    <p>Forgot your password? <a href="{{ url_for('forgot_password') }}">Forgot password</a></p>
+</body>
+</html>
